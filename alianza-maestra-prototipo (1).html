@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alianza Maestra — Prototipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B1A16;--paper:#F5F2EB;--paper-2:#EFEBE1;
+    --pine:#1E4A3D;--pine-deep:#163A30;--clay:#C0603A;
+    --sand:#E7E0D1;--muted:#6E675B;--line:#D8D2C4;--white:#FCFBF8;--r:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+  .hidden{display:none!important}
+  .eyebrow{font-family:"Spline Sans Mono",monospace;font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--pine);display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--clay);display:inline-block}
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:500;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(28px,4.2vw,44px)}
+  p{color:var(--muted)}
+  .lead{color:var(--ink)}
+
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:"Hanken Grotesk";font-weight:600;font-size:15.5px;padding:14px 22px;border-radius:100px;border:1.5px solid transparent;cursor:pointer;transition:transform .18s,background .18s,color .18s,border-color .18s}
+  .btn:focus-visible{outline:3px solid var(--clay);outline-offset:3px}
+  .btn-primary{background:var(--pine);color:var(--white)}
+  .btn-primary:hover{background:var(--pine-deep);transform:translateY(-2px)}
+  .btn-ghost{border-color:var(--ink);color:var(--ink)}
+  .btn-ghost:hover{background:var(--ink);color:var(--paper);transform:translateY(-2px)}
+  .btn-clay{background:var(--clay);color:var(--white)}
+  .btn-clay:hover{transform:translateY(-2px);filter:brightness(1.05)}
+  .btn .arw{transition:transform .2s}
+  .btn:hover .arw{transform:translate(3px,-3px)}
+  .btn-sm{padding:10px 18px;font-size:14px}
+
+  header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px;gap:16px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:"Fraunces";font-weight:600;font-size:19px;letter-spacing:-.01em;cursor:pointer;flex:none}
+  .brand .mark{width:34px;height:34px;border-radius:9px;background:var(--pine);display:grid;place-items:center;color:var(--white);font-family:"Fraunces";font-size:18px;font-weight:600;flex:none}
+  .brand small{display:block;font-family:"Spline Sans Mono";font-size:10px;letter-spacing:.18em;color:var(--muted);font-weight:400;margin-top:-2px}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{font-size:14.5px;font-weight:500;color:var(--muted);cursor:pointer;transition:color .15s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-cta{display:flex;gap:10px;align-items:center}
+  .lang{display:inline-flex;border:1px solid var(--line);border-radius:100px;overflow:hidden;background:var(--white);flex:none}
+  .lang button{border:none;background:none;font-family:"Spline Sans Mono";font-size:12px;font-weight:500;letter-spacing:.06em;color:var(--muted);padding:8px 12px;cursor:pointer;transition:background .15s,color .15s}
+  .lang button.active{background:var(--pine);color:var(--white)}
+
+  .hero{position:relative;padding:clamp(48px,7vw,92px) 0 clamp(56px,7vw,96px)}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center}
+  .hero h1{font-size:clamp(40px,6.4vw,72px);margin:22px 0 0}
+  .hero h1 em{font-style:italic;font-weight:400;color:var(--pine)}
+  .hero .sub{font-size:clamp(17px,1.7vw,20px);color:var(--ink);max-width:32ch;margin-top:22px}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+  .hero-meta{margin-top:38px;display:flex;flex-wrap:wrap;gap:10px 26px;align-items:center;font-family:"Spline Sans Mono";font-size:12.5px;letter-spacing:.06em;color:var(--muted);padding-top:24px;border-top:1px solid var(--line)}
+  .hero-meta b{color:var(--pine);font-weight:500}
+  .hero-art{position:relative}
+  .hero-art svg{width:100%;height:auto;display:block;overflow:visible}
+  .node-label{font-family:"Spline Sans Mono";font-size:11px;fill:var(--muted);letter-spacing:.04em}
+  .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s ease forwards}
+  .draw.d2{animation-delay:.25s}.draw.d3{animation-delay:.5s}.draw.d4{animation-delay:.75s}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .pop{opacity:0;transform:scale(.6);transform-origin:center;animation:pop .5s ease forwards}
+  .pop.p2{animation-delay:.5s}.pop.p3{animation-delay:.8s}.pop.p4{animation-delay:1.1s}.pop.p5{animation-delay:1.35s}
+  @keyframes pop{to{opacity:1;transform:scale(1)}}
+
+  .section{padding:clamp(56px,7vw,96px) 0}
+  .section-head{max-width:660px;margin-bottom:48px}
+  .section-head h2{margin-top:16px}
+  .section-head p{margin-top:16px;font-size:18px}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+  .step{padding:30px 26px 30px 0;border-right:1px solid var(--line)}
+  .step:last-child{border-right:none;padding-right:0}
+  .step .num{font-family:"Spline Sans Mono";font-size:13px;color:var(--clay);font-weight:500;letter-spacing:.1em}
+  .step h3{font-size:20px;margin:16px 0 10px;font-weight:600}
+  .step p{font-size:15px}
+  .money{margin-top:44px;background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:26px 30px;display:flex;flex-wrap:wrap;gap:18px 26px;align-items:center;justify-content:space-between}
+  .money .m-txt{font-family:"Fraunces";font-size:20px;font-weight:500;max-width:56ch;line-height:1.35}
+  .money .m-txt span{color:var(--pine)}
+  .money .m-txt small{display:block;font-family:"Hanken Grotesk";font-size:14px;color:var(--muted);margin-top:8px;font-weight:400}
+
+  .sectors{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -22px rgba(27,26,22,.35);border-color:var(--sand)}
+  .card .ico{width:40px;height:40px;border-radius:10px;background:var(--paper-2);display:grid;place-items:center;color:var(--pine);margin-bottom:18px}
+  .card .ico svg{width:22px;height:22px}
+  .card .tag{font-family:"Spline Sans Mono";font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .card h3{font-size:23px;margin:6px 0 10px;font-weight:500}
+  .card .desc{font-size:15px;flex:1}
+  .card .proj{margin-top:22px;padding-top:16px;border-top:1px dashed var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .card .proj .pl{font-size:12.5px;color:var(--muted)}
+  .card .proj .pl b{display:block;color:var(--ink);font-family:"Fraunces";font-size:16px;font-weight:500;margin-top:2px}
+  .card .see{font-weight:600;font-size:13.5px;color:var(--pine);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .card:hover .see .arw{transform:translate(3px,-3px)}
+  .card .see .arw{transition:transform .2s}
+
+  .trust-band{background:var(--paper-2)}
+  .criteria{display:grid;grid-template-columns:repeat(2,1fr);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--white)}
+  .crit{padding:30px 32px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .crit:nth-child(2n){border-right:none}
+  .crit:nth-last-child(-n+2){border-bottom:none}
+  .crit h3{font-size:20px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+  .crit h3 .n{font-family:"Spline Sans Mono";font-size:13px;color:var(--clay)}
+  .crit p{font-size:15px}
+  .note{margin-top:22px;font-family:"Spline Sans Mono";font-size:12px;color:var(--muted);letter-spacing:.03em}
+
+  .logos{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+  .logo-chip{border:1px solid var(--line);border-radius:100px;padding:10px 20px;font-family:"Fraunces";font-size:16px;font-weight:500;color:var(--ink);background:var(--white)}
+  .muted-chip{color:var(--muted);border-style:dashed!important;background:transparent!important}
+  .red-foot{margin-top:34px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+  .red-foot span{color:var(--muted);font-size:15px}
+
+  .join{background:var(--pine);color:var(--paper)}
+  .join .eyebrow{color:var(--sand)}
+  .join .eyebrow::before{background:var(--clay)}
+  .join-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:center}
+  .join h2{color:var(--white);margin-top:16px;font-size:clamp(28px,4vw,46px)}
+  .join p{color:var(--sand);margin-top:16px;font-size:18px;max-width:46ch}
+  .join .join-cta{display:flex;justify-content:flex-end}
+
+  .crumb{padding:26px 0 0;font-family:"Spline Sans Mono";font-size:12.5px;letter-spacing:.04em;color:var(--muted)}
+  .crumb a{cursor:pointer}.crumb a:hover{color:var(--ink)}
+  .crumb .sep{margin:0 8px;color:var(--line)}
+  .crumb b{color:var(--pine);font-weight:500}
+  .sector-hero{padding:34px 0 8px}
+  .sector-hero .ico-lg{width:56px;height:56px;border-radius:14px;background:var(--pine);color:var(--white);display:grid;place-items:center;margin-bottom:22px}
+  .sector-hero .ico-lg svg{width:30px;height:30px}
+  .sector-hero h1{font-size:clamp(36px,5.5vw,58px);margin-bottom:16px}
+  .sector-hero .intro{font-size:19px;color:var(--ink);max-width:56ch}
+  .sector-body{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:44px;align-items:start}
+  .spec-list{list-style:none}
+  .spec-list li{padding:14px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;font-size:16px;color:var(--ink)}
+  .spec-list li::before{content:"—";color:var(--clay);font-family:"Spline Sans Mono"}
+  .feature-proj{background:var(--pine);color:var(--sand);border-radius:var(--r);padding:32px}
+  .feature-proj .eyebrow{color:var(--sand)}.feature-proj .eyebrow::before{background:var(--clay)}
+  .feature-proj h3{color:var(--white);font-size:30px;margin:14px 0 10px}
+  .feature-proj p{color:var(--sand);font-size:15.5px}
+
+  .collab-head{margin-top:64px;margin-bottom:8px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
+  .collab-head h2{font-size:clamp(24px,3vw,34px)}
+  .collab-note{font-family:"Spline Sans Mono";font-size:12px;color:var(--muted);letter-spacing:.03em}
+  .collab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+  .collab{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:6px}
+  .collab .verified{font-family:"Spline Sans Mono";font-size:11px;letter-spacing:.06em;color:var(--pine);display:inline-flex;align-items:center;gap:6px;margin-bottom:6px}
+  .collab .verified .dot{width:7px;height:7px;border-radius:50%;background:var(--pine)}
+  .collab h4{font-family:"Fraunces";font-size:21px;font-weight:500}
+  .collab .type{font-size:13.5px;color:var(--muted);flex:1}
+  .collab .via{margin-top:14px;font-weight:600;font-size:13.5px;color:var(--pine);display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:none;background:none;font-family:inherit;padding:0;text-align:left}
+  .collab .via:hover .arw{transform:translate(3px,-3px)}
+  .collab .via .arw{transition:transform .2s}
+  .insignia{font-family:"Spline Sans Mono";font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--clay);border:1px solid var(--clay);border-radius:100px;padding:1px 7px;vertical-align:middle;margin-left:8px}
+  .collab-bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin-top:8px}
+  .beta-toggle{display:inline-flex;align-items:center;gap:10px;font-family:"Spline Sans Mono";font-size:12px;color:var(--muted);letter-spacing:.04em;cursor:not-allowed;user-select:none}
+  .beta-toggle .switch{width:34px;height:20px;border-radius:100px;background:var(--line);position:relative;transition:background .2s;flex:none}
+  .beta-toggle .switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--white);transition:transform .2s}
+  .beta-toggle.on .switch{background:var(--pine)}
+  .beta-toggle.on .switch::after{transform:translateX(14px)}
+  .beta-toggle .tag-beta{background:var(--clay);color:var(--white);border-radius:100px;padding:2px 8px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+
+  .cta-band{margin-top:64px;background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:44px;text-align:center}
+  .cta-band h2{font-size:clamp(26px,3.5vw,38px);margin-bottom:14px}
+  .cta-band p{max-width:48ch;margin:0 auto 26px}
+
+  .contact{background:var(--paper-2)}
+  .contact-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:48px;align-items:start}
+  .contact-intro h2{margin-top:16px}
+  .contact-intro p{margin-top:16px;font-size:18px}
+  .contact-points{list-style:none;margin-top:26px}
+  .contact-points li{padding:10px 0;border-bottom:1px solid var(--line);font-size:15px;color:var(--ink);display:flex;gap:10px}
+  .contact-points li::before{content:"✓";color:var(--pine);font-family:"Spline Sans Mono";font-weight:500}
+  .contact-form{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:32px}
+  .intent-toggle{display:flex;gap:6px;background:var(--paper-2);border-radius:100px;padding:5px;margin-bottom:24px}
+  .intent-toggle button{flex:1;border:none;background:none;font-family:"Hanken Grotesk";font-weight:600;font-size:14.5px;color:var(--muted);padding:10px;border-radius:100px;cursor:pointer;transition:background .2s,color .2s}
+  .intent-toggle button.active{background:var(--white);color:var(--pine);box-shadow:0 2px 8px -3px rgba(27,26,22,.25)}
+  .field{margin-bottom:16px;display:flex;flex-direction:column}
+  .field label{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:7px}
+  .field input,.field textarea{font-family:"Hanken Grotesk";font-size:15.5px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;width:100%;transition:border-color .15s}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--pine)}
+  .field textarea{resize:vertical}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--muted);margin:6px 0 4px;cursor:pointer;line-height:1.5}
+  .consent input{margin-top:3px;accent-color:var(--pine);flex:none}
+  .form-err{color:var(--clay);font-size:13.5px;font-weight:600;margin:6px 0}
+  .form-err:empty{display:none}
+  .form-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+  .form-actions .btn{flex:1;justify-content:center;min-width:160px}
+  .form-foot{font-family:"Spline Sans Mono";font-size:11.5px;color:var(--muted);letter-spacing:.02em;margin-top:16px;line-height:1.5}
+
+  footer{background:var(--pine-deep);color:var(--sand);padding:64px 0 40px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px}
+  footer .brand{color:var(--white)}
+  footer .brand .mark{background:var(--clay)}
+  footer p{color:var(--sand);font-size:15px;margin-top:18px;max-width:40ch}
+  .foot-col h4{font-family:"Spline Sans Mono";font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9FB3AB;font-weight:500;margin-bottom:16px}
+  .foot-col a,.foot-col span{display:block;font-size:15px;color:var(--sand);margin-bottom:10px;cursor:pointer}
+  .foot-col a:hover{color:var(--white)}
+  .foot-bottom{margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:13px;color:#8FA49C;font-family:"Spline Sans Mono";letter-spacing:.04em}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:36px}.hero-art{order:-1;max-width:440px}
+    .steps{grid-template-columns:1fr 1fr}
+    .step{border-right:none;border-bottom:1px solid var(--line);padding:24px 0}
+    .step:nth-child(odd){padding-right:24px;border-right:1px solid var(--line)}
+    .sectors{grid-template-columns:1fr}
+    .join-grid{grid-template-columns:1fr;gap:24px}.join .join-cta{justify-content:flex-start}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    .sector-body{grid-template-columns:1fr;gap:28px}
+    .collab-grid{grid-template-columns:1fr 1fr}
+    .contact-grid{grid-template-columns:1fr;gap:32px}
+  }
+  @media(max-width:640px){
+    .nav-links{display:none}.nav-cta .btn-ghost{display:none}
+    .foot-grid{grid-template-columns:1fr}
+    .money{flex-direction:column;align-items:flex-start}
+    .criteria{grid-template-columns:1fr}
+    .crit{border-right:none}
+    .collab-grid{grid-template-columns:1fr}
+    .form-actions .btn{flex:1 1 100%}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}.draw{stroke-dashoffset:0}.pop{opacity:1;transform:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" data-nav="#/">
+      <span class="mark">A</span>
+      <span>Alianza Maestra<small>GROUP · AMG</small></span>
+    </a>
+    <nav class="nav-links">
+      <a data-scroll="como" data-i18n="nav_how">Cómo funciona</a>
+      <a data-scroll="sectores" data-i18n="nav_sectors">Sectores</a>
+      <a data-nav="#/red" data-i18n="nav_network">Red</a>
+      <a data-scroll="unete" data-i18n="nav_join">Únete</a>
+    </nav>
+    <div class="nav-cta">
+      <div class="lang" id="lang-sel">
+        <button type="button" data-lang="es" class="active">ES</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a class="btn btn-ghost btn-sm" data-scroll="unete" data-intent="colaborador" data-i18n="cta_join_short">Quiero unirme</a>
+      <a class="btn btn-primary btn-sm" data-scroll="contacto" data-intent="cliente" data-i18n="cta_help_short">Necesito ayuda</a>
+    </div>
+  </div>
+</header>
+
+<main id="app">
+
+<!-- HOME -->
+<div class="page" id="page-home">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow" data-i18n="hero_eyebrow">Red privada · Málaga · München · Helsinki</span>
+        <h1 data-i18n-html="hero_h1">Cuéntanos qué necesitas.<br><em>Ya sabemos a quién llamar.</em></h1>
+        <p class="sub lead" data-i18n="hero_sub">Una red privada de profesionales verificados uno a uno. Menos búsqueda, menos riesgo, más confianza.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" data-scroll="contacto" data-intent="cliente"><span data-i18n="hero_cta_help">Necesito ayuda</span> <span class="arw">↗</span></a>
+          <a class="btn btn-ghost" data-scroll="unete" data-intent="colaborador" data-i18n="hero_cta_join">Quiero unirme a la red</a>
+        </div>
+        <div class="hero-meta" data-i18n-html="hero_meta"><span><b>3</b> hubs europeos</span><span><b>6</b> sectores</span><span>Selección <b>persona a persona</b></span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 420 360">
+          <path class="draw"    d="M70 60 C 150 60, 160 180, 215 180" fill="none" stroke="var(--line)" stroke-width="2"/>
+          <path class="draw d2" d="M70 180 C 140 180, 150 180, 215 180" fill="none" stroke="var(--pine)" stroke-width="2.5"/>
+          <path class="draw d3" d="M70 300 C 150 300, 160 180, 215 180" fill="none" stroke="var(--line)" stroke-width="2"/>
+          <path class="draw d4" d="M215 180 C 300 180, 300 110, 360 110" fill="none" stroke="var(--clay)" stroke-width="2.5"/>
+          <path class="draw d4" d="M215 180 C 300 180, 300 250, 360 250" fill="none" stroke="var(--pine)" stroke-width="2.5"/>
+          <g class="pop"><circle cx="70" cy="60" r="9" fill="var(--paper)" stroke="var(--muted)" stroke-width="2"/><text class="node-label" x="70" y="40" text-anchor="middle" data-i18n="svg_families">familias</text></g>
+          <g class="pop p2"><circle cx="70" cy="180" r="11" fill="var(--pine)"/><text class="node-label" x="70" y="160" text-anchor="middle" fill="var(--pine)" data-i18n="svg_you">tú</text></g>
+          <g class="pop"><circle cx="70" cy="300" r="9" fill="var(--paper)" stroke="var(--muted)" stroke-width="2"/><text class="node-label" x="70" y="326" text-anchor="middle" data-i18n="svg_companies">empresas</text></g>
+          <g class="pop p3"><circle cx="215" cy="180" r="30" fill="var(--white)" stroke="var(--pine)" stroke-width="2.5"/><text x="215" y="176" text-anchor="middle" font-family="Fraunces" font-size="22" font-weight="600" fill="var(--pine)">AMG</text><text class="node-label" x="215" y="196" text-anchor="middle" fill="var(--muted)" data-i18n="svg_criterio">criterio</text></g>
+          <g class="pop p4"><circle cx="360" cy="110" r="11" fill="var(--clay)"/><text class="node-label" x="360" y="90" text-anchor="middle" fill="var(--clay)" data-i18n="svg_partner">partner ✓</text></g>
+          <g class="pop p5"><circle cx="360" cy="250" r="11" fill="var(--pine)"/><text class="node-label" x="360" y="278" text-anchor="middle" fill="var(--pine)" data-i18n="svg_partner">partner ✓</text></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="como">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="how_eyebrow">Cómo funciona</span>
+        <h2 data-i18n="how_h2">Un proceso simple, deliberadamente humano.</h2>
+        <p data-i18n="how_p">No hacemos todo. Elegimos bien a quienes lo hacen — y te los presentamos.</p>
+      </div>
+      <div class="steps reveal">
+        <div class="step"><div class="num">01</div><h3 data-i18n="step1_t">Cuéntanos qué necesitas</h3><p data-i18n="step1_d">Una conversación, sin formularios infinitos.</p></div>
+        <div class="step"><div class="num">02</div><h3 data-i18n="step2_t">Entendemos tu caso</h3><p data-i18n="step2_d">Escuchamos antes de proponer nada.</p></div>
+        <div class="step"><div class="num">03</div><h3 data-i18n="step3_t">Buscamos en la red</h3><p data-i18n="step3_d">Solo partners ya verificados, uno a uno.</p></div>
+        <div class="step"><div class="num">04</div><h3 data-i18n="step4_t">Te conectamos</h3><p data-i18n="step4_d">Con la persona adecuada, y te acompañamos.</p></div>
+      </div>
+      <div class="money reveal">
+        <div class="m-txt" data-i18n-html="money">Para ti, contactar y que te conectemos es <span>gratis</span>.<small>AMG cobra una comisión al profesional solo cuando cierra el trabajo — nunca a ti.</small></div>
+        <a class="btn btn-primary" data-scroll="contacto" data-intent="cliente"><span data-i18n="money_cta">Hablar con AMG</span> <span class="arw">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sectores" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="sec_eyebrow">Qué necesitas resolver</span>
+        <h2 data-i18n="sec_h2">Un ecosistema, organizado por lo que buscas.</h2>
+        <p data-i18n="sec_p">Entra por tu necesidad, no por el nombre de un proyecto. Cada sector te lleva a su gente.</p>
+      </div>
+      <div class="sectors" id="home-sectors"></div>
+    </div>
+  </section>
+
+  <section class="section trust-band" id="confianza">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="trust_eyebrow">Por qué fiarse</span>
+        <h2 data-i18n="trust_h2">No es un directorio abierto.</h2>
+        <p data-i18n="trust_p">Cada colaborador entra por recomendación y pasa nuestro criterio antes de estar en la red. Respondemos por quien te presentamos.</p>
+      </div>
+      <div class="criteria reveal">
+        <div class="crit"><h3><span class="n">01</span> <span data-i18n="crit1_t">Selección personal</span></h3><p data-i18n="crit1_d">Elegimos a cada partner uno a uno. Nadie entra por pagar.</p></div>
+        <div class="crit"><h3><span class="n">02</span> <span data-i18n="crit2_t">Por recomendación</span></h3><p data-i18n="crit2_d">Entran a la red a través de alguien que ya confía en ellos.</p></div>
+        <div class="crit"><h3><span class="n">03</span> <span data-i18n="crit3_t">Verificados</span></h3><p data-i18n="crit3_d">Comprobamos su trabajo antes de ponerlos frente a ti.</p></div>
+        <div class="crit"><h3><span class="n">04</span> <span data-i18n="crit4_t">Una sola puerta</span></h3><p data-i18n="crit4_d">Hablas con AMG. Nosotros coordinamos y respondemos por el trato.</p></div>
+      </div>
+      <p class="note reveal" data-i18n="trust_note">↳ Reseñas de clientes: las publicaremos aquí según las recojamos.</p>
+    </div>
+  </section>
+
+  <section class="section" id="red">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="net_eyebrow">La red</span>
+        <h2 data-i18n="net_h2">Una alianza que crece uno a uno.</h2>
+        <p data-i18n="net_p">Algunos de los proyectos y marcas dentro del ecosistema AMG. El contacto siempre pasa por nosotros.</p>
+      </div>
+      <div class="logos reveal" id="home-logos"></div>
+      <div class="red-foot reveal">
+        <span data-i18n="net_foot">Y una red creciente de profesionales seleccionados en Europa.</span>
+        <a class="btn btn-ghost" data-nav="#/red"><span data-i18n="net_cta">Ver la red de colaboradores</span> <span class="arw">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section join" id="unete">
+    <div class="wrap join-grid">
+      <div class="reveal">
+        <span class="eyebrow" data-i18n="join_eyebrow">¿Eres profesional o empresa?</span>
+        <h2 data-i18n="join_h2">Únete a una red seleccionada de oportunidades reales.</h2>
+        <p data-i18n="join_p">Trabajas con clientes cualificados y te damos escaparate dentro del ecosistema. AMG cobra una comisión solo cuando cierras un trabajo. Sin ruido, sin competir por precio.</p>
+      </div>
+      <div class="join-cta reveal">
+        <a class="btn btn-clay" data-scroll="contacto" data-intent="colaborador"><span data-i18n="join_cta">Solicita unirte como colaborador</span> <span class="arw">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact" id="contacto">
+    <div class="wrap contact-grid">
+      <div class="contact-intro">
+        <span class="eyebrow" data-i18n="contact_eyebrow">Contacto</span>
+        <h2 id="contact-title">Cuéntanos qué necesitas.</h2>
+        <p id="contact-sub">Rellena lo justo y te respondemos por WhatsApp o email. Para ti es gratis — nunca cobramos por conectar.</p>
+        <ul class="contact-points">
+          <li data-i18n="cp1">Te conectamos con la persona adecuada de la red.</li>
+          <li data-i18n="cp2">Colaboradores verificados uno a uno.</li>
+          <li data-i18n="cp3">Respondemos por cada trato.</li>
+        </ul>
+      </div>
+      <div class="contact-form">
+        <div class="intent-toggle" id="intent-toggle">
+          <button type="button" data-intent="cliente" class="active" data-i18n="intent_client">Necesito ayuda</button>
+          <button type="button" data-intent="colaborador" data-i18n="intent_partner">Quiero unirme</button>
+        </div>
+        <div class="field">
+          <label for="f-nombre" data-i18n="f_name_label">Tu nombre</label>
+          <input id="f-nombre" type="text" data-i18n-ph="f_name_ph" placeholder="Nombre o negocio" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="f-msg" id="f-msg-label">¿Qué necesitas?</label>
+          <textarea id="f-msg" rows="4" data-i18n-ph="f_msg_ph" placeholder="Descríbelo con tus palabras…"></textarea>
+        </div>
+        <label class="consent"><input type="checkbox" id="f-consent"> <span data-i18n-html="consent">Acepto ser contactado por AMG y he leído la <a href="#" onclick="return false" style="color:var(--pine);text-decoration:underline">política de privacidad</a>.</span></label>
+        <p class="form-err" id="form-err"></p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="send-wa"><span data-i18n="send_wa">Enviar por WhatsApp</span> <span class="arw">↗</span></button>
+          <button type="button" class="btn btn-ghost" id="send-email" data-i18n="send_email">Enviar por email</button>
+        </div>
+        <p class="form-foot" data-i18n="form_foot">Se abrirá WhatsApp o tu correo con el mensaje ya preparado. No guardamos nada en la web.</p>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /home -->
+
+<!-- SECTOR -->
+<div class="page hidden" id="page-sector">
+  <div class="wrap"><div class="crumb" id="sector-crumb"></div></div>
+  <div id="sector-content"></div>
+</div>
+
+<!-- RED -->
+<div class="page hidden" id="page-red">
+  <div class="wrap">
+    <div class="crumb"><a data-nav="#/" data-i18n="crumb_home">Inicio</a><span class="sep">/</span><b data-i18n="crumb_network">Red de colaboradores</b></div>
+    <section class="section" style="padding-top:34px">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="red_eyebrow">Red de colaboradores AMG</span>
+        <h2 data-i18n="red_h2">Profesionales y marcas dentro del ecosistema.</h2>
+        <p data-i18n="red_p">Accede a profesionales y empresas seleccionadas a través de nuestra red. Mostramos quién forma parte, pero el contacto siempre se coordina a través de AMG — así respondemos por cada trato.</p>
+      </div>
+      <div class="collab-bar">
+        <div id="red-beta"></div>
+        <span class="collab-note" data-i18n="red_bar_note">Mostramos categoría y zona; los nombres están en pausa salvo proyectos insignia.</span>
+      </div>
+      <div class="collab-grid" id="red-collabs"></div>
+      <div class="cta-band">
+        <h2 data-i18n="red_cta_title">¿Buscas a alguien de la red?</h2>
+        <p data-i18n="red_cta_p">Cuéntanos qué necesitas y te conectamos con el colaborador adecuado. Para ti es gratis.</p>
+        <a class="btn btn-primary" data-scroll="contacto" data-intent="cliente"><span data-i18n="cta_need_help">Necesito ayuda</span> <span class="arw">↗</span></a>
+      </div>
+    </section>
+  </div>
+</div>
+
+</main>
+
+<footer id="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" data-nav="#/"><span class="mark">A</span><span>Alianza Maestra<small>GROUP · AMG</small></span></a>
+        <p data-i18n="foot_p">Operamos directamente en Málaga, Múnich y Helsinki. Un ecosistema de colaboración real entre profesionales, proyectos y oportunidades.</p>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_sectors">Sectores</h4>
+        <div id="foot-sectors"></div>
+      </div>
+      <div class="foot-col">
+        <h4 data-i18n="foot_contact">Contacto</h4>
+        <a href="mailto:hola@alianza-maestra.com">hola@alianza-maestra.com</a>
+        <a href="https://wa.me/491772642178" target="_blank" rel="noopener">WhatsApp · +49 177 264 2178</a>
+        <span>Málaga · München · Helsinki</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Alianza Maestra Group</span>
+      <span data-i18n="foot_bottom_r">Hecho con intención — Crafted across Europe</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================= i18n dictionary ================= */
+let lang='es';
+const T={
+  es:{
+    nav_how:'Cómo funciona',nav_sectors:'Sectores',nav_network:'Red',nav_join:'Únete',
+    cta_join_short:'Quiero unirme',cta_help_short:'Necesito ayuda',
+    hero_eyebrow:'Red privada · Málaga · München · Helsinki',
+    hero_h1:'Cuéntanos qué necesitas.<br><em>Ya sabemos a quién llamar.</em>',
+    hero_sub:'Una red privada de profesionales verificados uno a uno. Menos búsqueda, menos riesgo, más confianza.',
+    hero_cta_help:'Necesito ayuda',hero_cta_join:'Quiero unirme a la red',
+    hero_meta:'<span><b>3</b> hubs europeos</span><span><b>6</b> sectores</span><span>Selección <b>persona a persona</b></span>',
+    svg_families:'familias',svg_you:'tú',svg_companies:'empresas',svg_partner:'partner ✓',svg_criterio:'criterio',
+    how_eyebrow:'Cómo funciona',how_h2:'Un proceso simple, deliberadamente humano.',
+    how_p:'No hacemos todo. Elegimos bien a quienes lo hacen — y te los presentamos.',
+    step1_t:'Cuéntanos qué necesitas',step1_d:'Una conversación, sin formularios infinitos.',
+    step2_t:'Entendemos tu caso',step2_d:'Escuchamos antes de proponer nada.',
+    step3_t:'Buscamos en la red',step3_d:'Solo partners ya verificados, uno a uno.',
+    step4_t:'Te conectamos',step4_d:'Con la persona adecuada, y te acompañamos.',
+    money:'Para ti, contactar y que te conectemos es <span>gratis</span>.<small>AMG cobra una comisión al profesional solo cuando cierra el trabajo — nunca a ti.</small>',
+    money_cta:'Hablar con AMG',
+    sec_eyebrow:'Qué necesitas resolver',sec_h2:'Un ecosistema, organizado por lo que buscas.',
+    sec_p:'Entra por tu necesidad, no por el nombre de un proyecto. Cada sector te lleva a su gente.',
+    trust_eyebrow:'Por qué fiarse',trust_h2:'No es un directorio abierto.',
+    trust_p:'Cada colaborador entra por recomendación y pasa nuestro criterio antes de estar en la red. Respondemos por quien te presentamos.',
+    crit1_t:'Selección personal',crit1_d:'Elegimos a cada partner uno a uno. Nadie entra por pagar.',
+    crit2_t:'Por recomendación',crit2_d:'Entran a la red a través de alguien que ya confía en ellos.',
+    crit3_t:'Verificados',crit3_d:'Comprobamos su trabajo antes de ponerlos frente a ti.',
+    crit4_t:'Una sola puerta',crit4_d:'Hablas con AMG. Nosotros coordinamos y respondemos por el trato.',
+    trust_note:'↳ Reseñas de clientes: las publicaremos aquí según las recojamos.',
+    net_eyebrow:'La red',net_h2:'Una alianza que crece uno a uno.',
+    net_p:'Algunos de los proyectos y marcas dentro del ecosistema AMG. El contacto siempre pasa por nosotros.',
+    net_foot:'Y una red creciente de profesionales seleccionados en Europa.',net_cta:'Ver la red de colaboradores',
+    chip_more:'+{n} colaboradores verificados',
+    join_eyebrow:'¿Eres profesional o empresa?',join_h2:'Únete a una red seleccionada de oportunidades reales.',
+    join_p:'Trabajas con clientes cualificados y te damos escaparate dentro del ecosistema. AMG cobra una comisión solo cuando cierras un trabajo. Sin ruido, sin competir por precio.',
+    join_cta:'Solicita unirte como colaborador',
+    contact_eyebrow:'Contacto',
+    contact_title_client:'Cuéntanos qué necesitas.',contact_title_partner:'Únete a la red.',
+    contact_sub_client:'Rellena lo justo y te respondemos por WhatsApp o email. Para ti es gratis — nunca cobramos por conectar.',
+    contact_sub_partner:'Cuéntanos quién eres y qué haces. Revisamos cada solicitud personalmente.',
+    cp1:'Te conectamos con la persona adecuada de la red.',cp2:'Colaboradores verificados uno a uno.',cp3:'Respondemos por cada trato.',
+    intent_client:'Necesito ayuda',intent_partner:'Quiero unirme',
+    f_name_label:'Tu nombre',f_name_ph:'Nombre o negocio',
+    f_msg_label_client:'¿Qué necesitas?',f_msg_label_partner:'¿A qué te dedicas?',f_msg_ph:'Descríbelo con tus palabras…',
+    consent:'Acepto ser contactado por AMG y he leído la <a href="#" onclick="return false" style="color:var(--pine);text-decoration:underline">política de privacidad</a>.',
+    send_wa:'Enviar por WhatsApp',send_email:'Enviar por email',
+    form_foot:'Se abrirá WhatsApp o tu correo con el mensaje ya preparado. No guardamos nada en la web.',
+    err_fields:'Dinos tu nombre y qué necesitas para poder ayudarte.',err_consent:'Marca la casilla de consentimiento para continuar.',
+    foot_p:'Operamos directamente en Málaga, Múnich y Helsinki. Un ecosistema de colaboración real entre profesionales, proyectos y oportunidades.',
+    foot_sectors:'Sectores',foot_contact:'Contacto',foot_bottom_r:'Hecho con intención — Crafted across Europe',
+    verified_by_amg:'Verificado por AMG',collab_anon:'Colaborador verificado',insignia:'insignia',contact_via_amg:'Contactar vía AMG',
+    beta_show_names:'Mostrar nombres',beta_title:'Función pendiente de debatir — se activa en el código (SHOW_COLLAB_NAMES)',
+    crumb_home:'Inicio',crumb_sectors:'Sectores',crumb_network:'Red de colaboradores',
+    sector_of:'Sector 0{n} de 6',specialties:'Especialidades',featured_project:'Proyecto destacado',
+    collabs_in_sector:'Colaboradores en este sector',
+    collab_note_sector:'Mostramos categoría y zona. Los nombres están en pausa (salvo proyectos insignia) mientras decidimos si exponerlos. El contacto siempre se coordina con AMG.',
+    sector_cta_title:'¿Necesitas algo de {sector}?',
+    sector_cta_p:'Cuéntanoslo y te conectamos con la persona adecuada de la red. Para ti es gratis; nunca te cobramos por conectar.',
+    cta_need_help:'Necesito ayuda',
+    red_eyebrow:'Red de colaboradores AMG',red_h2:'Profesionales y marcas dentro del ecosistema.',
+    red_p:'Accede a profesionales y empresas seleccionadas a través de nuestra red. Mostramos quién forma parte, pero el contacto siempre se coordina a través de AMG — así respondemos por cada trato.',
+    red_bar_note:'Mostramos categoría y zona; los nombres están en pausa salvo proyectos insignia.',
+    red_cta_title:'¿Buscas a alguien de la red?',red_cta_p:'Cuéntanos qué necesitas y te conectamos con el colaborador adecuado. Para ti es gratis.',
+    card_featured:'Proyecto destacado',see_sector:'Ver sector',
+    m_greet_c:'Hola AMG, soy {n}.',m_sector:'Sector: ',m_need:'Necesito: ',
+    m_greet_p:'Hola AMG, soy {n} y quiero unirme como colaborador.',m_spec:'Especialidad / sector: ',m_about:'Sobre mí: ',
+    m_from:'(enviado desde la web)',m_noname:'(sin nombre)',
+    subj_c:'Necesito ayuda',subj_p:'Quiero unirme como colaborador'
+  },
+  en:{
+    nav_how:'How it works',nav_sectors:'Sectors',nav_network:'Network',nav_join:'Join',
+    cta_join_short:'Join',cta_help_short:'Need help',
+    hero_eyebrow:'Private network · Málaga · München · Helsinki',
+    hero_h1:'Tell us what you need.<br><em>We already know who to call.</em>',
+    hero_sub:'A private network of professionals vetted one by one. Less searching, less risk, more trust.',
+    hero_cta_help:'Need help',hero_cta_join:'Join the network',
+    hero_meta:'<span><b>3</b> European hubs</span><span><b>6</b> sectors</span><span>Selection <b>person to person</b></span>',
+    svg_families:'families',svg_you:'you',svg_companies:'companies',svg_partner:'partner ✓',svg_criterio:'judgment',
+    how_eyebrow:'How it works',how_h2:'A simple process, deliberately human.',
+    how_p:'We don’t do everything. We choose well who does — and introduce you.',
+    step1_t:'Tell us what you need',step1_d:'A conversation, no endless forms.',
+    step2_t:'We understand your case',step2_d:'We listen before proposing anything.',
+    step3_t:'We search the network',step3_d:'Only already-vetted partners, one by one.',
+    step4_t:'We connect you',step4_d:'With the right person, and we stay with you.',
+    money:'For you, getting in touch and connected is <span>free</span>.<small>AMG charges the professional a commission only when the job closes — never you.</small>',
+    money_cta:'Talk to AMG',
+    sec_eyebrow:'What you need to solve',sec_h2:'One ecosystem, organised around what you need.',
+    sec_p:'Enter by your need, not a project name. Each sector leads to its people.',
+    trust_eyebrow:'Why trust us',trust_h2:'It’s not an open directory.',
+    trust_p:'Every collaborator enters by referral and passes our judgment before joining the network. We vouch for whoever we introduce.',
+    crit1_t:'Personal selection',crit1_d:'We choose each partner one by one. No one gets in by paying.',
+    crit2_t:'By referral',crit2_d:'They join the network through someone who already trusts them.',
+    crit3_t:'Vetted',crit3_d:'We check their work before putting them in front of you.',
+    crit4_t:'A single door',crit4_d:'You talk to AMG. We coordinate and vouch for the deal.',
+    trust_note:'↳ Client reviews: we’ll publish them here as we collect them.',
+    net_eyebrow:'The network',net_h2:'An alliance that grows one by one.',
+    net_p:'Some of the projects and brands inside the AMG ecosystem. Contact always goes through us.',
+    net_foot:'And a growing network of selected professionals across Europe.',net_cta:'See the collaborator network',
+    chip_more:'+{n} verified collaborators',
+    join_eyebrow:'Are you a professional or company?',join_h2:'Join a selected network of real opportunities.',
+    join_p:'You work with qualified clients and get visibility inside the ecosystem. AMG charges a commission only when you close a job. No noise, no racing to the bottom on price.',
+    join_cta:'Apply to join as a collaborator',
+    contact_eyebrow:'Contact',
+    contact_title_client:'Tell us what you need.',contact_title_partner:'Join the network.',
+    contact_sub_client:'Fill in the essentials and we’ll reply on WhatsApp or email. It’s free for you — we never charge to connect.',
+    contact_sub_partner:'Tell us who you are and what you do. We review every application personally.',
+    cp1:'We connect you with the right person in the network.',cp2:'Collaborators vetted one by one.',cp3:'We vouch for every deal.',
+    intent_client:'Need help',intent_partner:'Join',
+    f_name_label:'Your name',f_name_ph:'Name or business',
+    f_msg_label_client:'What do you need?',f_msg_label_partner:'What do you do?',f_msg_ph:'Describe it in your own words…',
+    consent:'I agree to be contacted by AMG and have read the <a href="#" onclick="return false" style="color:var(--pine);text-decoration:underline">privacy policy</a>.',
+    send_wa:'Send via WhatsApp',send_email:'Send via email',
+    form_foot:'WhatsApp or your email will open with the message ready. We store nothing on the site.',
+    err_fields:'Tell us your name and what you need so we can help.',err_consent:'Tick the consent box to continue.',
+    foot_p:'We operate directly in Málaga, Munich and Helsinki. An ecosystem of real collaboration between professionals, projects and opportunities.',
+    foot_sectors:'Sectors',foot_contact:'Contact',foot_bottom_r:'Made with intent — Crafted across Europe',
+    verified_by_amg:'Verified by AMG',collab_anon:'Verified collaborator',insignia:'flagship',contact_via_amg:'Contact via AMG',
+    beta_show_names:'Show names',beta_title:'Feature pending discussion — toggled in code (SHOW_COLLAB_NAMES)',
+    crumb_home:'Home',crumb_sectors:'Sectors',crumb_network:'Collaborator network',
+    sector_of:'Sector 0{n} of 6',specialties:'Specialties',featured_project:'Featured project',
+    collabs_in_sector:'Collaborators in this sector',
+    collab_note_sector:'We show category and zone. Names are on hold (except flagship projects) while we decide whether to reveal them. Contact is always coordinated through AMG.',
+    sector_cta_title:'Need something in {sector}?',
+    sector_cta_p:'Tell us and we’ll connect you with the right person in the network. It’s free for you; we never charge to connect.',
+    cta_need_help:'Need help',
+    red_eyebrow:'AMG collaborator network',red_h2:'Professionals and brands inside the ecosystem.',
+    red_p:'Access selected professionals and companies through our network. We show who’s part of it, but contact is always coordinated through AMG — that’s how we vouch for every deal.',
+    red_bar_note:'We show category and zone; names are on hold except flagship projects.',
+    red_cta_title:'Looking for someone in the network?',red_cta_p:'Tell us what you need and we’ll connect you with the right collaborator. It’s free for you.',
+    card_featured:'Featured project',see_sector:'View sector',
+    m_greet_c:'Hi AMG, I’m {n}.',m_sector:'Sector: ',m_need:'I need: ',
+    m_greet_p:'Hi AMG, I’m {n} and I’d like to join as a collaborator.',m_spec:'Specialty / sector: ',m_about:'About me: ',
+    m_from:'(sent from the website)',m_noname:'(no name)',
+    subj_c:'Need help',subj_p:'Application to join as collaborator'
+  }
+};
+function t(k){return (T[lang]&&T[lang][k])||T.es[k]||k;}
+
+/* ================= data (bilingual) ================= */
+const ICONS={
+  educacion:'<path d="M3 9l9-5 9 5-9 5-9-5z"/><path d="M7 11v5c0 1 2 2 5 2s5-1 5-2v-5"/>',
+  vivienda:'<path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/>',
+  movilidad:'<path d="M5 12l1.5-5h11L19 12"/><path d="M4 12h16v5H4z"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/>',
+  tecnologia:'<rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8"/><path d="M12 16v4"/>',
+  marketing:'<path d="M4 10v4h3l6 4V6l-6 4H4z"/><path d="M17 9a4 4 0 010 6"/>',
+  empresa:'<path d="M4 20V8l6-4 6 4v12"/><path d="M4 20h16"/><path d="M9 20v-4h2v4"/><path d="M14 12h2M14 9h2"/>'
+};
+const SECTORS=[
+  {id:'educacion',icon:'educacion',
+   label_es:'Educación y Familia',label_en:'Education & Family',
+   desc_es:'Cuidado infantil, apoyo educativo y profesionales de confianza para el día a día, con foco en infancia y comunidad germano-hispana.',
+   desc_en:'Childcare, educational support and trusted professionals for everyday life, focused on children and the German-Spanish community.',
+   esp_es:['Cuidado infantil','Apoyo educativo','Orientación familiar','Proyectos educativos'],
+   esp_en:['Childcare','Educational support','Family guidance','Educational projects'],
+   proyecto:{name:'Meister Allianz',line_es:'Cuidado infantil privado y acompañamiento familiar en München.',line_en:'Private childcare and family support in Munich.'},
+   colaboradores:[{n:'Meister Allianz',t_es:'Cuidado infantil privado · München',t_en:'Private childcare · München',flagship:true}]},
+  {id:'vivienda',icon:'vivienda',
+   label_es:'Vivienda e Instalaciones',label_en:'Housing & Facilities',
+   desc_es:'Instalaciones técnicas, agua, mantenimiento, construcción y compra-venta inmobiliaria premium en la Costa del Sol y Europa.',
+   desc_en:'Technical installations, water, maintenance, construction and premium real estate across the Costa del Sol and Europe.',
+   esp_es:['Instalaciones técnicas y agua','Reformas y mantenimiento','Construcción e ingeniería','Real estate premium'],
+   esp_en:['Technical & water installations','Renovation & maintenance','Construction & engineering','Premium real estate'],
+   proyecto:{name:'Aquayala',line_es:'Instalaciones técnicas e hidráulicas en Fuengirola.',line_en:'Technical and plumbing installations in Fuengirola.'},
+   colaboradores:[
+     {n:'Aquayala',t_es:'Instalaciones e hidráulica · Costa del Sol',t_en:'Installations & plumbing · Costa del Sol',flagship:true},
+     {n:'PropHero',t_es:'Inversión inmobiliaria',t_en:'Real estate investment'},
+     {n:'Koti Rentals',t_es:'Alquiler y gestión · Helsinki',t_en:'Rentals & management · Helsinki'},
+     {n:'Nexa Prime Homes',t_es:'Real estate premium',t_en:'Premium real estate'},
+     {n:'Siegel GmbH',t_es:'Construcción · München',t_en:'Construction · München'}]},
+  {id:'movilidad',icon:'movilidad',
+   label_es:'Movilidad y Transporte',label_en:'Mobility & Transport',
+   desc_es:'Traslados privados, transporte premium y soluciones de movilidad para clientes exigentes en Europa.',
+   desc_en:'Private transfers, premium transport and mobility solutions for demanding clients across Europe.',
+   esp_es:['Conductores privados','Transporte premium','Logística','Movilidad para eventos'],
+   esp_en:['Private drivers','Premium transport','Logistics','Event mobility'],
+   proyecto:{name:'Málaga Driver',line_es:'Movilidad premium en la Costa del Sol.',line_en:'Premium mobility on the Costa del Sol.'},
+   colaboradores:[
+     {n:'Málaga Driver',t_es:'Movilidad premium · Costa del Sol',t_en:'Premium mobility · Costa del Sol',flagship:true},
+     {n:'Alarcón VIP',t_es:'Transporte privado',t_en:'Private transport'}]},
+  {id:'tecnologia',icon:'tecnologia',
+   label_es:'Tecnología y Digital',label_en:'Technology & Digital',
+   desc_es:'Producto digital, IA aplicada, software, automatización y telecomunicaciones para negocios y profesionales.',
+   desc_en:'Digital product, applied AI, software, automation and telecoms for businesses and professionals.',
+   esp_es:['Desarrollo web y apps','Automatización e IA','Software a medida','Telecomunicaciones'],
+   esp_en:['Web & app development','Automation & AI','Custom software','Telecommunications'],
+   proyecto:{name:'Fragua Systems',line_es:'Desarrollo de software y automatización.',line_en:'Software development and automation.'},
+   colaboradores:[
+     {n:'Fragua Systems',t_es:'Software y automatización',t_en:'Software & automation'},
+     {n:'Iberika Telecom',t_es:'Conectividad e infraestructura',t_en:'Connectivity & infrastructure'}]},
+  {id:'marketing',icon:'marketing',
+   label_es:'Marketing, Diseño y Media',label_en:'Marketing, Design & Media',
+   desc_es:'Diseño gráfico, branding, dirección creativa, fotografía, contenido y crecimiento para marcas con visión internacional.',
+   desc_en:'Graphic design, branding, creative direction, photography, content and growth for brands with international vision.',
+   esp_es:['Diseño y branding','Marketing y contenidos','Fotografía y audiovisual','Posicionamiento'],
+   esp_en:['Design & branding','Marketing & content','Photography & video','SEO & positioning'],
+   proyecto:{name:'Grafiru',line_es:'Diseño gráfico, branding y dirección creativa.',line_en:'Graphic design, branding and creative direction.'},
+   colaboradores:[
+     {n:'Grafiru',t_es:'Branding y diseño',t_en:'Branding & design'},
+     {n:'Verargb Studio',t_es:'Fotografía y retrato editorial',t_en:'Editorial photography & portrait'}]},
+  {id:'empresa',icon:'empresa',
+   label_es:'Empresa y Consultoría',label_en:'Business & Consulting',
+   desc_es:'Consultoría estratégica, gestión de proyectos, finanzas, fiscalidad y asesoría para decisiones importantes.',
+   desc_en:'Strategic consulting, project management, finance, tax and advisory for important decisions.',
+   esp_es:['Consultoría estratégica','Finanzas y fiscalidad','Asesoría legal','Gestión de proyectos'],
+   esp_en:['Strategic consulting','Finance & tax','Legal advisory','Project management'],
+   proyecto:{name:'Bayteca',line_es:'Consultoría y gestión de proyectos.',line_en:'Consulting and project management.'},
+   colaboradores:[
+     {n:'Bayteca',t_es:'Consultoría de negocio',t_en:'Business consulting'},
+     {n:'Ortega Leiva',t_es:'Asesoría y planificación',t_en:'Advisory & planning'}]}
+];
+const sectorById=id=>SECTORS.find(s=>s.id===id);
+const L=(o,k)=>o[k+'_'+lang];
+const svgIco=key=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICONS[key]}</svg>`;
+
+/* PENDIENTE DE DEBATIR — mostrar nombres de colaboradores. false = anónimo (insignia siempre con nombre). */
+const SHOW_COLLAB_NAMES=false;
+
+function collabCard(c,topLabel,sid){
+  const showName=c.flagship||SHOW_COLLAB_NAMES;
+  const top=topLabel||t('verified_by_amg');
+  const title=showName?c.n:t('collab_anon');
+  const badge=(c.flagship&&!SHOW_COLLAB_NAMES)?`<span class="insignia">${t('insignia')}</span>`:'';
+  const secAttr=sid?` data-sector="${sid}"`:'';
+  return `<div class="collab">
+    <span class="verified"><span class="dot"></span>${top}</span>
+    <h4>${title}${badge}</h4>
+    <span class="type">${L(c,'t')}</span>
+    <button class="via" data-scroll="contacto" data-intent="cliente"${secAttr}>${t('contact_via_amg')} <span class="arw">↗</span></button>
+  </div>`;
+}
+function betaToggle(){
+  return `<div class="beta-toggle ${SHOW_COLLAB_NAMES?'on':''}" title="${t('beta_title')}">
+    <span>${t('beta_show_names')}</span><span class="switch"></span><span class="tag-beta">beta</span></div>`;
+}
+
+/* ================= renderers ================= */
+function renderHome(){
+  document.getElementById('home-sectors').innerHTML=SECTORS.map((s,i)=>`
+    <article class="card reveal" data-nav="#/sector/${s.id}">
+      <div class="ico">${svgIco(s.icon)}</div>
+      <span class="tag">Sector 0${i+1}</span>
+      <h3>${L(s,'label')}</h3>
+      <p class="desc">${L(s,'desc').split('.')[0]}.</p>
+      <div class="proj">
+        <span class="pl">${t('card_featured')}<b>${s.proyecto.name}</b></span>
+        <span class="see">${t('see_sector')} <span class="arw">↗</span></span>
+      </div>
+    </article>`).join('');
+  const all=SECTORS.flatMap(s=>s.colaboradores);
+  let chips;
+  if(SHOW_COLLAB_NAMES){
+    chips=[...new Set(all.map(c=>c.n))].map(b=>`<span class="logo-chip">${b}</span>`);
+  }else{
+    const flag=[...new Set(all.filter(c=>c.flagship).map(c=>c.n))];
+    const others=all.length-flag.length;
+    chips=flag.map(b=>`<span class="logo-chip">${b}</span>`);
+    chips.push(`<span class="logo-chip muted-chip">${t('chip_more').replace('{n}',others)}</span>`);
+  }
+  document.getElementById('home-logos').innerHTML=chips.join('');
+  document.getElementById('foot-sectors').innerHTML=SECTORS.map(s=>`<a data-nav="#/sector/${s.id}">${L(s,'label')}</a>`).join('');
+}
+
+function renderSector(id){
+  const s=sectorById(id); if(!s){location.hash='#/';return;}
+  const idx=SECTORS.indexOf(s)+1;
+  document.getElementById('sector-crumb').innerHTML=
+    `<a data-nav="#/">${t('crumb_home')}</a><span class="sep">/</span><a data-scroll="sectores">${t('crumb_sectors')}</a><span class="sep">/</span><b>${L(s,'label')}</b>`;
+  document.getElementById('sector-content').innerHTML=`
+    <div class="wrap">
+      <section class="sector-hero">
+        <div class="ico-lg">${svgIco(s.icon)}</div>
+        <span class="eyebrow">${t('sector_of').replace('{n}',idx)}</span>
+        <h1 style="margin-top:14px">${L(s,'label')}</h1>
+        <p class="intro">${L(s,'desc')}</p>
+      </section>
+      <div class="sector-body">
+        <div>
+          <span class="eyebrow">${t('specialties')}</span>
+          <ul class="spec-list" style="margin-top:18px">
+            ${L(s,'esp').map(e=>`<li>${e}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="feature-proj">
+          <span class="eyebrow">${t('featured_project')}</span>
+          <h3>${s.proyecto.name}</h3>
+          <p>${L(s.proyecto,'line')}</p>
+        </div>
+      </div>
+      <div class="collab-head">
+        <h2>${t('collabs_in_sector')}</h2>
+        ${betaToggle()}
+      </div>
+      <p class="collab-note" style="margin-top:10px">${t('collab_note_sector')}</p>
+      <div class="collab-grid">
+        ${s.colaboradores.map(c=>collabCard(c,undefined,s.id)).join('')}
+      </div>
+      <div class="cta-band">
+        <h2>${t('sector_cta_title').replace('{sector}',L(s,'label'))}</h2>
+        <p>${t('sector_cta_p')}</p>
+        <a class="btn btn-primary" data-scroll="contacto" data-intent="cliente" data-sector="${s.id}">${t('cta_need_help')} <span class="arw">↗</span></a>
+      </div>
+    </div>`;
+}
+
+function renderRed(){
+  const rows=SECTORS.flatMap(s=>s.colaboradores.map(c=>({...c,sector:L(s,'label'),sid:s.id})));
+  document.getElementById('red-collabs').innerHTML=rows.map(c=>collabCard(c,c.sector,c.sid)).join('');
+  document.getElementById('red-beta').innerHTML=betaToggle();
+}
+
+/* ================= i18n apply ================= */
+function applyStatic(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=t(el.dataset.i18n));
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>el.innerHTML=t(el.dataset.i18nHtml));
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>el.setAttribute('placeholder',t(el.dataset.i18nPh)));
+}
+
+/* ================= router ================= */
+let pendingScroll=null;
+const pages={home:'page-home',sector:'page-sector',red:'page-red'};
+function show(p){Object.values(pages).forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(p).classList.remove('hidden');}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+function observeReveals(){document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));}
+function handleRoute(){
+  const h=location.hash||'#/';
+  if(h.startsWith('#/sector/')){renderSector(h.split('/')[2]);show(pages.sector);window.scrollTo(0,0);}
+  else if(h==='#/red'){renderRed();show(pages.red);window.scrollTo(0,0);}
+  else{
+    show(pages.home);
+    if(pendingScroll){const el=document.getElementById(pendingScroll);pendingScroll=null;window.scrollTo(0,0);if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth'}),60);}
+    else{window.scrollTo(0,0);}
+  }
+  observeReveals();
+}
+
+/* ================= clicks ================= */
+document.addEventListener('click',e=>{
+  const nav=e.target.closest('[data-nav]');
+  const scr=e.target.closest('[data-scroll]');
+  if(nav){e.preventDefault();const dest=nav.getAttribute('data-nav');if(location.hash===dest||(!location.hash&&dest==='#/')){handleRoute();}else{location.hash=dest;}return;}
+  if(scr){e.preventDefault();const anchor=scr.getAttribute('data-scroll');
+    if(anchor==='contacto'){applyIntake(scr.getAttribute('data-intent'),scr.getAttribute('data-sector'));}
+    if(!location.hash||location.hash==='#/'){const el=document.getElementById(anchor);if(el)el.scrollIntoView({behavior:'smooth'});}
+    else{pendingScroll=anchor;location.hash='#/';}
+  }
+});
+window.addEventListener('hashchange',handleRoute);
+
+/* ================= language switch ================= */
+function refreshLang(){
+  applyStatic();renderHome();applyIntentCopy();
+  const h=location.hash||'#/';
+  if(h.startsWith('#/sector/'))renderSector(h.split('/')[2]);
+  else if(h==='#/red')renderRed();
+  observeReveals();
+}
+document.getElementById('lang-sel').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-lang]');if(!b)return;
+  lang=b.dataset.lang;
+  document.querySelectorAll('#lang-sel button').forEach(x=>x.classList.toggle('active',x===b));
+  refreshLang();
+});
+
+/* ================= intake / contacto ================= */
+const WA_NUMBER='491772642178';
+const AMG_EMAIL='hola@alianza-maestra.com';
+let intentState='cliente';
+let contextSector='';
+
+(function initIntake(){
+  const toggle=document.getElementById('intent-toggle');
+  toggle.addEventListener('click',e=>{
+    const b=e.target.closest('button[data-intent]');if(!b)return;
+    intentState=b.getAttribute('data-intent');
+    toggle.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
+    applyIntentCopy();
+  });
+  document.getElementById('send-wa').addEventListener('click',()=>submit('wa'));
+  document.getElementById('send-email').addEventListener('click',()=>submit('email'));
+})();
+
+function applyIntentCopy(){
+  const cli=intentState==='cliente';
+  document.getElementById('contact-title').textContent=cli?t('contact_title_client'):t('contact_title_partner');
+  document.getElementById('contact-sub').textContent=cli?t('contact_sub_client'):t('contact_sub_partner');
+  document.getElementById('f-msg-label').textContent=cli?t('f_msg_label_client'):t('f_msg_label_partner');
+}
+
+function buildMessage(){
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const msg=document.getElementById('f-msg').value.trim();
+  const sectorLabel=contextSector?L(sectorById(contextSector),'label'):'';
+  const name=nombre||t('m_noname');
+  const A=[];
+  if(intentState==='cliente'){
+    A.push(t('m_greet_c').replace('{n}',name));
+    if(sectorLabel)A.push(t('m_sector')+sectorLabel);
+    A.push(t('m_need')+msg);
+  }else{
+    A.push(t('m_greet_p').replace('{n}',name));
+    if(sectorLabel)A.push(t('m_spec')+sectorLabel);
+    A.push(t('m_about')+msg);
+  }
+  A.push(t('m_from'));
+  return {text:A.join('\n'),sectorLabel};
+}
+
+function submit(via){
+  const err=document.getElementById('form-err');
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const msg=document.getElementById('f-msg').value.trim();
+  const consent=document.getElementById('f-consent').checked;
+  if(!nombre||!msg){err.textContent=t('err_fields');return;}
+  if(!consent){err.textContent=t('err_consent');return;}
+  err.textContent='';
+  const {text,sectorLabel}=buildMessage();
+  if(via==='wa'){
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`,'_blank','noopener');
+  }else{
+    const subject=intentState==='cliente'?t('subj_c')+(sectorLabel?' — '+sectorLabel:''):t('subj_p');
+    window.location.href=`mailto:${AMG_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+  }
+}
+
+function applyIntake(intent,sector){
+  contextSector=sector||'';
+  if(intent){
+    intentState=intent;
+    const toggle=document.getElementById('intent-toggle');
+    toggle.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.getAttribute('data-intent')===intent));
+    applyIntentCopy();
+  }
+}
+
+/* ================= init ================= */
+applyStatic();
+renderHome();
+applyIntentCopy();
+handleRoute();
+</script>
+</body>
+</html>

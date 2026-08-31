@@ -39,7 +39,7 @@ a {
   text-decoration: none;
 }
 .wrap {
-  max-width: 1300px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 0 28px;
 }
@@ -71,7 +71,9 @@ h1, h2, h3 {
   letter-spacing: -.01em;
 }
 h2 {
-  font-size: clamp(33px, 5.06vw, 57px);
+  font-size: clamp(33px, 5.06vw, 53px);
+  /* Regular = 400. Sobrescribe el 500 (Medium) de la regla h1,h2,h3. */
+  font-weight: 400;
 }
 p {
   color: var(--muted);
@@ -151,35 +153,36 @@ header {
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: 21px;
-  letter-spacing: -.01em;
+  gap: 18px;
   cursor: pointer;
   flex: none;
 }
-.brand .mark {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: var(--pine);
-  display: grid;
-  place-items: center;
-  color: var(--white);
-  font-family: var(--font-serif);
-  font-size: 20px;
-  font-weight: 600;
-  flex: none;
-}
-.brand small {
+/* Isotipo y logotipo son PNG monocromos con alfa: se usan como máscara y se
+   rellenan con currentColor, así heredan el color del header / footer.       */
+.brand-mark,
+.brand-word {
   display: block;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: .18em;
-  color: var(--muted);
-  font-weight: 400;
-  margin-top: -2px;
+  background: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+.brand-mark {
+  /* 690 x 486 */
+  width: 55px;
+  height: 39px;
+  -webkit-mask-image: url("/logos/alianza-maestra-mark.png");
+  mask-image: url("/logos/alianza-maestra-mark.png");
+}
+.brand-word {
+  /* 1359 x 254 */
+  width: 140px;
+  height: 26px;
+  -webkit-mask-image: url("/logos/alianza-maestra-wordmark.png");
+  mask-image: url("/logos/alianza-maestra-wordmark.png");
 }
 .nav-links {
   display: flex;
@@ -293,16 +296,26 @@ header {
 
 .hero {
   position: relative;
-  /* padding: clamp(56px, 8vw, 108px) 0 clamp(64px, 8vw, 108px); */
+  /* Aire bajo el header pegajoso. En escritorio el grid centra el bloque de
+     texto y ya sobraba algo de espacio; apilado no, y el eyebrow quedaba
+     rozando la barra.                                                     */
+  padding-top: clamp(32px, 3.5vw, 56px);
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.4fr .8fr;
+  /* El 2.º valor manda en el tamaño del arte. Con .wrap a 1500px y una
+     ventana de 1440: .9fr=520px · 1.05fr=569px · 1.2fr=608px.            */
+  grid-template-columns: 1.4fr 1.05fr;
   gap: 56px;
   align-items: center;
 }
 .hero h1 {
-  font-size: clamp(50.5px, 8.03vw, 101px);
+  /* Figma: Fraunces regular 72px en escritorio. 5vw hace que toque los 72px
+     justo a 1440px de ancho; por debajo baja de forma fluida hasta 36px.   */
+  /* font-size: clamp(36px, 5vw, 72px); */
+  font-size: clamp(50.5px,8.03vw,101px);
+  
+  font-weight: 400;
   line-height: 1.02;
   margin: 28px 0 0;
 }
@@ -312,7 +325,9 @@ header {
   color: var(--pine);
 }
 .hero .sub {
-  font-size: clamp(20px, 2.09vw, 24px);
+  /* Figma: Hanken Grotesk regular 19px. */
+  font-size: 19px;
+  font-weight: 400;
   line-height: 1.5;
   color: var(--ink);
   max-width: 34ch;
@@ -352,9 +367,10 @@ header {
 }
 .node-label {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   fill: var(--muted);
-  letter-spacing: .04em;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
 .draw {
   stroke-dasharray: 1;
@@ -364,6 +380,7 @@ header {
 .draw.d2 { animation-delay: .25s; }
 .draw.d3 { animation-delay: .5s; }
 .draw.d4 { animation-delay: .75s; }
+.draw.d5 { animation-delay: 1s; }
 @keyframes draw {
   to { stroke-dashoffset: 0; }
 }
@@ -377,8 +394,127 @@ header {
 .pop.p3 { animation-delay: .8s; }
 .pop.p4 { animation-delay: 1.1s; }
 .pop.p5 { animation-delay: 1.35s; }
+.pop.p6 { animation-delay: 1.6s; }
 @keyframes pop {
   to { opacity: 1; transform: scale(1); }
+}
+
+
+/* ── Navegación móvil (<= 900px) ──────────────────────────────────────
+   Hamburguesa en el header y panel a pantalla completa. Recoge los enlaces
+   y los dos CTA, que a ese ancho no caben en la barra.                */
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  flex: none;
+}
+.burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin: 0 auto;
+  border-radius: 2px;
+  background: currentColor;
+}
+.mpanel {
+  display: none;
+}
+.mpanel.open {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--paper);
+  padding: 0 28px calc(28px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  animation: mpanel-in .18s ease-out;
+}
+@keyframes mpanel-in {
+  from { opacity: 0; transform: translateY(-8px); }
+}
+.mpanel:focus {
+  outline: none;
+}
+.mpanel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  flex: none;
+}
+.mpanel-close {
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  flex: none;
+}
+.mpanel-close svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+  margin: 0 auto;
+}
+.mpanel-links {
+  display: flex;
+  flex-direction: column;
+  margin-top: 18px;
+}
+.mpanel-links a {
+  font-family: var(--font-serif);
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+/* Empuja idioma y CTA al fondo del panel. */
+.mpanel-foot {
+  margin-top: auto;
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+.mpanel-foot .lang {
+  align-self: flex-start;
+  margin-bottom: 8px;
+}
+/* Abajo del todo no cabe hacia abajo: el desplegable de idioma sube. */
+.mpanel-foot .lang-menu {
+  top: auto;
+  bottom: calc(100% + 9px);
+  left: 0;
+  right: auto;
+  transform: translateY(6px);
+}
+.mpanel-foot .lang-menu::before {
+  top: auto;
+  bottom: -11px;
+}
+.mpanel-foot .lang:hover .lang-menu,
+.mpanel-foot .lang:focus-within .lang-menu {
+  transform: none;
+}
+.mpanel-foot .btn {
+  width: 100%;
+  justify-content: center;
 }
 
 .section {
@@ -431,10 +567,13 @@ header {
 .step p {
   font-size: 17.5px;
 }
+.join-valuebox .btn .arw {
+  display: inline-block;
+  margin-left: 9px;
+}
+
 .money {
-  margin-top: 40px;
   padding: 24px 0 0;
-  border-top: 1px solid var(--line);
   display: flex;
   flex-wrap: wrap;
   gap: 14px 26px;
@@ -1253,9 +1392,6 @@ footer {
 footer .brand {
   color: var(--white);
 }
-footer .brand .mark {
-  background: var(--clay);
-}
 footer p {
   color: var(--sand);
   font-size: 16.5px;
@@ -1307,11 +1443,25 @@ footer p {
 }
 
 @media (max-width: 900px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 36px; }
-  .hero-art { order: -1; max-width: 440px; }
+  .nav-links, .nav-cta { display: none; }
+  .burger { display: flex; }
+  /* row-gap a 0: al disolver .hero-copy los márgenes propios de cada bloque
+     (h1, .sub, .hero-cta, .hero-meta) vuelven a marcar el ritmo vertical;
+     un gap uniforme se sumaría a ellos y lo descuadraría.                 */
+  .hero-grid { grid-template-columns: 1fr; gap: 0; }
+  /* Apilado, el arte va tras el texto y antes de los botones. Para poder
+     intercalarlo hay que disolver el bloque de copia: con `display: contents`
+     sus hijos pasan a ser ítems del grid y `order` ya puede ordenarlos.   */
+  .hero-copy { display: contents; }
+  .hero-art { order: 1; max-width: 464px; margin: 36px auto 0; }
+  .hero-cta { order: 2; }
+  .hero-meta { order: 3; }
   .steps { grid-template-columns: 1fr 1fr; }
   .step { border-right: none; border-bottom: 1px solid var(--line); padding: 24px 0; }
   .step:nth-child(odd) { padding-right: 24px; border-right: 1px solid var(--line); }
+  /* La columna derecha necesita su propio aire: sin esto el texto arranca
+     pegado al divisor que dibuja la celda impar.                          */
+  .step:nth-child(even) { padding-left: 24px; }
   .sectors { grid-template-columns: 1fr; }
   .join-grid { grid-template-columns: 1fr; gap: 34px; }
   .join-valuebox { border-left: 0; padding-left: 0; }
@@ -1322,8 +1472,21 @@ footer p {
   .model-grid { grid-template-columns: 1fr; gap: 32px; }
 }
 @media (max-width: 640px) {
-  .nav-links { display: none; }
-  .nav-cta .btn-ghost { display: none; }
+  /* CTA largo ("Solicita unirte como colaborador"): a ancho completo y con la
+     flecha dentro del flujo del texto. Como flex, al partirse el rótulo la
+     flecha quedaba suelta a la derecha; en bloque acompaña a la última
+     palabra y las dos líneas se leen centradas.                           */
+  .join-valuebox .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .brand { gap: 12px; }
+  .brand-mark { width: 43px; height: 30px; }
+  .brand-word { width: 112px; height: 21px; }
+  .mpanel-links a { font-size: 24px; }
   .foot-grid { grid-template-columns: 1fr; }
   .money { flex-direction: column; align-items: flex-start; }
   .criteria { grid-template-columns: 1fr; }

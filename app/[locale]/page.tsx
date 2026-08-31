@@ -43,17 +43,17 @@ export default function HomePage({ params }: { params: { locale: string } }) {
           Dos versiones. Deja UNA activa y comenta la otra.               */}
       {/* ACTUAL — "No es un directorio abierto." (argumento en negación,
           repite lo que ya dice AboutSection).                            */}
-      <Trust locale={locale} />
+      {/* <Trust locale={locale} /> */}
       {/* NUEVA — "Alineados con tu resultado, no con tu tiempo."
           Copy y estructura calcados de la sección "El modelo" de
           example.html. Responde al precio, que hoy solo aparece en la
           línea pequeña de HowItWorks.                                    */}
-      {/* <ModelSection locale={locale} /> */}
+      <ModelSection locale={locale} />
 
       {/* ── LA RED ───────────────────────────────────────────────────────
           Misma sección; solo cambia el titular.                          */}
       {/* ACTUAL — "Una alianza que crece uno a uno."                     */}
-      <Network locale={locale} />
+      {/* <Network locale={locale} /> */}
       {/* NUEVA — "Quiénes ya están dentro."                              */}
       {/* <Network locale={locale} variant="alt" /> */}
 

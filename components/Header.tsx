@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/config";
 import { createT } from "@/lib/i18n";
 import Brand from "./Brand";
 import LangSwitcher from "./LangSwitcher";
+import MobileMenu from "./MobileMenu";
 import { contactHref, sectionHref } from "./ContactLink";
 
 export default function Header({ locale }: { locale: Locale }) {
@@ -29,6 +30,7 @@ export default function Header({ locale }: { locale: Locale }) {
             {t("cta_help_short")}
           </Link>
         </div>
+        <MobileMenu locale={locale} />
       </div>
     </header>
   );

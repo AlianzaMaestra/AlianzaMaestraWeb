@@ -22,7 +22,7 @@ export async function generateMetadata({
   return {
     metadataBase: new URL(SITE_URL),
     title: {
-      default: "Alianza Maestra Group — " + t("hero_eyebrow"),
+      default: "Alianza Maestra Group — " + t("meta_tagline"),
       template: "%s · Alianza Maestra Group",
     },
     description: t("hero_sub"),

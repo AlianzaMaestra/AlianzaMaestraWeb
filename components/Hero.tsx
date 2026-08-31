@@ -9,7 +9,10 @@ export default function Hero({ locale }: { locale: Locale }) {
   return (
     <section className="hero">
       <div className="wrap hero-grid">
-        <div>
+        {/* En móvil este contenedor pasa a `display: contents` (ver globals.css)
+            para que sus hijos entren en el grid y el arte pueda colocarse
+            entre el párrafo y los botones. */}
+        <div className="hero-copy">
           <span className="eyebrow">{t("hero_eyebrow")}</span>
           <h1 dangerouslySetInnerHTML={{ __html: t("hero_h1") }} />
           <p className="sub lead">{t("hero_sub")}</p>

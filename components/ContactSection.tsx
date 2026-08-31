@@ -114,7 +114,6 @@ export default function ContactSection({ locale }: { locale: Locale }) {
               {t("send_email")}
             </button>
           </div>
-          <p className="form-foot">{t("form_foot")}</p>
         </div>
       </div>
     </section>

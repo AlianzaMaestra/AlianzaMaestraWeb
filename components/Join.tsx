@@ -28,7 +28,13 @@ export default function Join({ locale }: { locale: Locale }) {
             ))}
           </ul>
           <Link className="btn btn-clay" href={contactHref(locale, "colaborador")}>
-            <span>{t("join_cta")}</span> <span className="arw">↗</span>
+            {/* Sin espacio entre el rótulo y la flecha: así no hay punto de
+                corte y, si el texto parte en dos líneas, la flecha viaja
+                con la última palabra en vez de quedarse sola. */}
+            <span>
+              {t("join_cta")}
+              <span className="arw">↗</span>
+            </span>
           </Link>
         </div>
       </div>

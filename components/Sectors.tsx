@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/config";
 import { createT } from "@/lib/i18n";
-import { SECTORS, label, desc } from "@/lib/sectors";
+import { SECTORS, label } from "@/lib/sectors";
 import { SectorIcon } from "@/lib/icons";
+import { ArrowRight } from "lucide-react";
 
 export default function Sectors({ locale }: { locale: Locale }) {
   const t = createT(locale);
@@ -17,19 +18,13 @@ export default function Sectors({ locale }: { locale: Locale }) {
         <div className="sectors">
           {SECTORS.map((s) => (
             <Link className="card reveal" href={`/${locale}/sector/${s.id}`} key={s.id}>
-              <div className="ico">
+              <div className="card-icon">
                 <SectorIcon name={s.icon} />
               </div>
-              <h3>{label(s, locale)}</h3>
-              <p className="desc">{desc(s, locale).split(".")[0]}.</p>
-              <div className="proj">
-                <span className="pl">
-                  {t("card_featured")}
-                  <b>{s.proyecto.name}</b>
-                </span>
-                <span className="see">
-                  {t("see_sector")} <span className="arw">↗</span>
-                </span>
+              <h3 className="card-title">{label(s, locale)}</h3>
+              <div className="card-footer">
+                <span className="card-link">{t("see_sector")}</span>
+                <ArrowRight className="card-arrow" size={22} strokeWidth={1.8} aria-hidden="true" />
               </div>
             </Link>
           ))}

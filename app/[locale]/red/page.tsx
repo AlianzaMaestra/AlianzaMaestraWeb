@@ -48,7 +48,7 @@ export default function RedPage({ params }: { params: { locale: string } }) {
           <h2>{t("red_cta_title")}</h2>
           <p>{t("red_cta_p")}</p>
           <Link className="btn btn-primary" href={contactHref(locale, "cliente")}>
-            {t("cta_need_help")} <span className="arw">↗</span>
+            {t("cta_need_help")}
           </Link>
         </div>
       </section>

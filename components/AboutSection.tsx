@@ -61,7 +61,7 @@ export default function AboutSection({ locale }: { locale: Locale }) {
                 <Ico>{c.icon}</Ico>
               </div>
               <h3>{c.title}</h3>
-              <p>{c.desc}</p>
+              <p dangerouslySetInnerHTML={{ __html: c.desc }} />
             </article>
           ))}
         </div>

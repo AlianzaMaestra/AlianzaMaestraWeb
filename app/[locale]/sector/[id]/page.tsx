@@ -85,7 +85,7 @@ export default function SectorPage({ params }: { params: { locale: string; id: s
           <h2>{t("sector_cta_title").replace("{sector}", label(s, locale))}</h2>
           <p>{t("sector_cta_p")}</p>
           <Link className="btn btn-primary" href={contactHref(locale, "cliente", s.id)}>
-            {t("cta_need_help")} <span className="arw">↗</span>
+            {t("cta_need_help")}
           </Link>
         </div>
       </div>

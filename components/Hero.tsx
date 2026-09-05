@@ -15,10 +15,10 @@ export default function Hero({ locale }: { locale: Locale }) {
         <div className="hero-copy">
           <span className="eyebrow">{t("hero_eyebrow")}</span>
           <h1 dangerouslySetInnerHTML={{ __html: t("hero_h1") }} />
-          <p className="sub lead">{t("hero_sub")}</p>
+          <p className="hero-description" dangerouslySetInnerHTML={{ __html: t("hero_sub") }} />
           <div className="hero-cta">
             <Link className="btn btn-primary" href={contactHref(locale, "cliente")}>
-              <span>{t("hero_cta_help")}</span> <span className="arw">↗</span>
+              <span>{t("hero_cta_help")}</span>
             </Link>
             <Link className="btn btn-ghost" href={contactHref(locale, "colaborador")}>
               {t("hero_cta_join")}

@@ -133,6 +133,7 @@ p {
 .btn-sm {
   padding: 10px 18px;
   font-size: 15.5px;
+  white-space: nowrap;
 }
 
 header {
@@ -303,35 +304,51 @@ header {
 }
 .hero-grid {
   display: grid;
+  /* Contenedor de consulta: en móvil .hero-copy pasa a display:contents y deja
+     de ser caja, así que el h1 mide contra este de reserva (ancho completo). */
+  container-type: inline-size;
   /* El 2.º valor manda en el tamaño del arte. Con .wrap a 1500px y una
      ventana de 1440: .9fr=520px · 1.05fr=569px · 1.2fr=608px.            */
   grid-template-columns: 1.4fr 1.05fr;
   gap: 56px;
   align-items: center;
 }
+/* El h1 mide su cuerpo contra el ancho de esta columna, no contra el viewport. */
+.hero-copy {
+  container-type: inline-size;
+}
 .hero h1 {
-  /* Figma: Fraunces regular 72px en escritorio. 5vw hace que toque los 72px
-     justo a 1440px de ancho; por debajo baja de forma fluida hasta 36px.   */
-  /* font-size: clamp(36px, 5vw, 72px); */
-  font-size: clamp(50.5px,8.03vw,101px);
-  
+  /* Dos líneas fijas, una por frase: el <br> del literal es el único corte
+     permitido (nowrap desactiva el reajuste automático, pero no el <br>).
+     El tope en cqi es el que garantiza que la frase más larga quepa: medida
+     sobre la página, "Ya sabemos a quién llamar." en cursiva ocupa 11.73x el
+     cuerpo, así que 100cqi/11.73 = 8.52cqi; 8.3 deja un margen del 2.6%.    */
+  white-space: nowrap;
+  font-size: min(clamp(50.5px, 8.03vw, 101px), 8.3cqi);
   font-weight: 400;
   line-height: 1.02;
   margin: 28px 0 0;
+}
+/* "We already know who to call." es más ancha (12.51x el cuerpo). */
+html:lang(en) .hero h1 {
+  font-size: min(clamp(50.5px, 8.03vw, 101px), 7.8cqi);
 }
 .hero h1 em {
   font-style: italic;
   font-weight: 400;
   color: var(--pine);
 }
-.hero .sub {
-  /* Figma: Hanken Grotesk regular 19px. */
-  font-size: 19px;
+.hero-description {
+  font-family: var(--font-sans);
+  font-size: 25px;
   font-weight: 400;
-  line-height: 1.5;
-  color: var(--ink);
-  max-width: 34ch;
-  margin-top: 28px;
+  line-height: 1.45;
+  letter-spacing: -.01em;
+  color: #1d1d1b;
+  max-width: 620px;
+  /* El aire con el h1 lo pone este margen: en .hero-copy los bloques marcan
+     su propio ritmo vertical, no hay gap de flex/grid que lo dé. */
+  margin: 28px 0 0;
 }
 .hero-cta {
   display: flex;
@@ -602,8 +619,12 @@ header {
 }
 
 /* ===== Sección "Qué es AMG" (propuesta de valor) ===== */
+/* 960px y no 760: el h2 ("No es un buscador. Es una red curada.") mide 917px
+   a cuerpo 53 y con la caja anterior se partía en dos líneas (el inglés, 965).
+   El eyebrow va centrado y el párrafo tiene su propio tope de 60ch, así que
+   este ancho solo afecta al titular. */
 .about-head {
-  max-width: 760px;
+  max-width: 1000px;
   margin: 0 auto 52px;
   text-align: center;
 }
@@ -616,7 +637,7 @@ header {
 .about-head p {
   margin: 18px auto 0;
   font-size: 21px;
-  max-width: 60ch;
+  max-width: 70ch;
 }
 .about-grid {
   display: grid;
@@ -661,83 +682,76 @@ header {
 .sectors {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 24px;
 }
+/* Tarjeta de sector: icono, nombre y, fijado abajo, el paso a la página del sector.
+   La entrada es la necesidad, no el detalle. */
 .card {
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  padding: 28px;
+  min-height: 270px;
+  padding: 28px 40px;
+  background: #fbfaf7;
+  border: 1px solid #d8d1c4;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: transform .2s, box-shadow .2s, border-color .2s;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 40px -22px rgba(27, 26, 22, .35);
-  border-color: color-mix(in srgb, var(--clay) 38%, var(--line));
+  transform: translateY(-3px);
+  border-color: #bdb5a8;
+  box-shadow: 0 10px 30px rgba(30, 35, 30, .06);
 }
-.card .ico {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  background: var(--paper-2);
-  display: grid;
-  place-items: center;
-  color: var(--pine);
-  margin-bottom: 18px;
+.card-icon {
+  width: 94px;
+  height: 94px;
+  border-radius: 50%;
+  background: #edf0e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #075b48;
+  margin-bottom: 14px;
 }
-.card .ico svg {
-  width: 20px;
-  height: 20px;
+.card-icon svg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.8;
 }
-.card h3 {
-  font-size: 25.5px;
-  margin: 6px 0 10px;
+.card-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 31px;
+  line-height: 1.15;
   font-weight: 500;
+  letter-spacing: -.02em;
+  color: #151918;
 }
-.card .desc {
-  font-size: 17.5px;
-}
-/* Pie de tarjeta fijado abajo: alinea "Proyecto destacado / Ver sector" entre las 3 tarjetas de la fila. */
-.card .proj {
+/* margin-top:auto alinea el pie entre las tres tarjetas de la fila aunque el
+   nombre del sector ocupe una o dos líneas. */
+.card-footer {
   margin-top: auto;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  border-top: 1px solid #ded9cf;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
 }
-.card .proj .pl {
-  font-size: 13px;
-  color: var(--muted);
+.card-link {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #075b48;
 }
-/* El nombre de marca con un poco más de presencia que la etiqueta gris de encima. */
-.card .proj .pl b {
-  display: block;
-  color: var(--ink);
-  font-family: var(--font-serif);
-  font-size: 19px;
-  font-weight: 600;
-  margin-top: 3px;
+/* La flecha es el propio SVG de lucide: sin disco de fondo. */
+.card-arrow {
+  flex: none;
+  color: #075b48;
+  transition: transform .2s ease;
 }
-/* Único acento clay de la tarjeta (el "hilo dorado" del resto de la web). */
-.card .see {
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--clay);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-.card:hover .see .arw {
-  transform: translate(3px, -3px);
-}
-.card .see .arw {
-  transition: transform .2s;
+.card:hover .card-arrow {
+  transform: translateX(4px);
 }
 
 .trust-band {
@@ -1442,19 +1456,24 @@ footer p {
   transform: none;
 }
 
-@media (max-width: 900px) {
+/* La barra colapsa antes que el resto del layout: "Encontrar a la persona
+   adecuada" es un rótulo largo y por debajo de ~1100px ya no cabe junto a los
+   enlaces sin partirse en dos líneas y desbordar el alto del header. */
+@media (max-width: 1100px) {
   .nav-links, .nav-cta { display: none; }
   .burger { display: flex; }
+}
+@media (max-width: 900px) {
   /* row-gap a 0: al disolver .hero-copy los márgenes propios de cada bloque
-     (h1, .sub, .hero-cta, .hero-meta) vuelven a marcar el ritmo vertical;
+     (h1, .hero-description, .hero-cta, .hero-meta) marcan el ritmo vertical;
      un gap uniforme se sumaría a ellos y lo descuadraría.                 */
   .hero-grid { grid-template-columns: 1fr; gap: 0; }
-  /* Apilado, el arte va tras el texto y antes de los botones. Para poder
-     intercalarlo hay que disolver el bloque de copia: con `display: contents`
-     sus hijos pasan a ser ítems del grid y `order` ya puede ordenarlos.   */
+  /* Apilado, el arte va después de los botones. Para poder reordenarlo hay que
+     disolver el bloque de copia: con `display: contents` sus hijos pasan a ser
+     ítems del grid y `order` ya puede colocarlos.                         */
   .hero-copy { display: contents; }
-  .hero-art { order: 1; max-width: 464px; margin: 36px auto 0; }
-  .hero-cta { order: 2; }
+  .hero-cta { order: 1; }
+  .hero-art { order: 2; max-width: 464px; margin: 36px auto 0; }
   .hero-meta { order: 3; }
   .steps { grid-template-columns: 1fr 1fr; }
   .step { border-right: none; border-bottom: 1px solid var(--line); padding: 24px 0; }
@@ -1462,7 +1481,8 @@ footer p {
   /* La columna derecha necesita su propio aire: sin esto el texto arranca
      pegado al divisor que dibuja la celda impar.                          */
   .step:nth-child(even) { padding-left: 24px; }
-  .sectors { grid-template-columns: 1fr; }
+  /* Icono + nombre son estrechos: a una sola columna quedarían tarjetas muy anchas y vacías. */
+  .sectors { grid-template-columns: 1fr 1fr; }
   .join-grid { grid-template-columns: 1fr; gap: 34px; }
   .join-valuebox { border-left: 0; padding-left: 0; }
   .foot-grid { grid-template-columns: 1fr 1fr; }
@@ -1471,7 +1491,40 @@ footer p {
   .contact-grid { grid-template-columns: 1fr; gap: 32px; }
   .model-grid { grid-template-columns: 1fr; gap: 32px; }
 }
+@media (max-width: 768px) {
+  .hero-description {
+    font-size: 15px;
+    line-height: 1.55;
+    /* max-width: 340px; */
+  }
+  .card {
+    min-height: 230px;
+    padding: 26px 28px;
+  }
+  .card-icon {
+    width: 82px;
+    height: 82px;
+  }
+  .card-icon svg {
+    width: 38px;
+    height: 38px;
+  }
+  .card-title {
+    font-size: 26px;
+  }
+  .card-link {
+    font-size: 16px;
+    font-weight: 800;
+  }
+  .card-arrow {
+    width: 20px;
+    height: 20px;
+  }
+}
 @media (max-width: 640px) {
+  /* A dos columnas el nombre del sector ya no cabe: el ancho mínimo de la
+     tarjeta desbordaba la pantalla en móviles de 390px o menos. */
+  .sectors { grid-template-columns: 1fr; }
   /* CTA largo ("Solicita unirte como colaborador"): a ancho completo y con la
      flecha dentro del flujo del texto. Como flex, al partirse el rótulo la
      flecha quedaba suelta a la derecha; en bloque acompaña a la última
